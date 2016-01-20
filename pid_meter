@@ -13,16 +13,22 @@ OPTIONS+=" -logfile=$OUTDIR/scmp.$SUFFIX.json"
 # OPTIONS+=" -samplefile=$HOME/tmp/rtlsdr/scmp_$SUFFIX.samples"
 
 
+if [ ! -d "$OUTDIR" ]; then
+    makedir -p "$OUTDIR"
+fi
+
+# requirement
 if [ ! "$(pidof rtl_tcp)" ]; then
     echo "[RTLTCP start $SUFFIX]"  >> $LOGFILE 2>&1
     screen -dmS tcp bash -c "nice rtl_tcp"
 fi
 
-
-
+# Base command
 if [ ! "$(pidof rtlamr)" ]; then
     echo "[RTLAMR start $SUFFIX]"  >> $LOGFILE 2>&1
     screen -dmS amr bash -c "nice rtlamr $OPTIONS >> $LOGFILE 2>&1"
 fi
 
+
+# let me know that it is still running in logs
 echo -n '.' >> $LOGFILE
