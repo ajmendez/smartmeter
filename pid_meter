@@ -7,8 +7,14 @@ LOGFILE="$HOME/tmp/smartmeter.log"
 
 OUTDIR="$HOME/data/smartmeter"
 SUFFIX="$(date '+%s').$(date '+%Y.%m.%d')"
-OPTIONS=" -msgtype=scm+ -format=json -offsettuning=true"
-OPTIONS+=" -logfile=$OUTDIR/scmp.$SUFFIX.json"
+
+# OPTIONS=" -msgtype=scm+ -format=json -offsettuning=true"
+# OPTIONS+=" -logfile=$OUTDIR/scmp.$SUFFIX.json"
+
+OPTIONS=" -msgtype=scm -format=csv -offsettuning=true"
+OPTIONS+=" -logfile=$OUTDIR/scm.$SUFFIX.csv"
+
+
 # samples is pretty expensive in space and I am not sure what I would use it for
 # OPTIONS+=" -samplefile=$HOME/tmp/rtlsdr/scmp_$SUFFIX.samples"
 
@@ -20,13 +26,13 @@ fi
 # requirement
 if [ ! "$(pidof rtl_tcp)" ]; then
     echo "[RTLTCP start $SUFFIX]"  >> $LOGFILE 2>&1
-    screen -dmS tcp bash -c "nice rtl_tcp"
+    screen -dmS tcp bash -c "source ~/.bashrc && nice rtl_tcp"
 fi
 
 # Base command
 if [ ! "$(pidof rtlamr)" ]; then
     echo "[RTLAMR start $SUFFIX]"  >> $LOGFILE 2>&1
-    screen -dmS amr bash -c "nice rtlamr $OPTIONS >> $LOGFILE 2>&1"
+    screen -dmS amr bash -c "source ~/.bashrc && nice /home/pi/.local/go/bin/rtlamr $OPTIONS >> $LOGFILE 2>&1"
 fi
 
 
